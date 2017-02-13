@@ -55,6 +55,8 @@ spec:
               name: f5-patches
             - mountPath: /container.init
               name: container-init
+            - mountPath: /development
+              name: development
       volumes:
         - name: neutron-etc
           configMap:
@@ -62,12 +64,12 @@ spec:
         - name: neutron-etc-vendor
           configMap:
             name: neutron-etc-vendor
-        - name: f5-etc
-          configMap:
-            name: neutron-f5-etc-{{$loadbalancer.name}}
         - name: f5-patches
           configMap:
             name: f5-patches
+        - name: f5-etc
+          configMap:
+            name: neutron-f5-etc-{{$loadbalancer.name}}
         - name: development
           persistentVolumeClaim:
             claimName: development-pvclaim

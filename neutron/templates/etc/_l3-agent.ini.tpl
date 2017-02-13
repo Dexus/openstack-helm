@@ -8,3 +8,6 @@ gateway_external_network_id =
 agent_mode = legacy
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 ovs_use_veth = False
+
+rpc_response_timeout = {{ .Values.rpc_response_timeout | default .Values.global.rpc_response_timeout | default 60 }}
+rpc_workers = {{ .Values.rpc_workers | default .Values.global.rpc_workers | default 1 }}

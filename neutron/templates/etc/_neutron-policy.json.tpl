@@ -26,7 +26,7 @@
     "update_subnet": "rule:admin_or_network_owner",
     "delete_subnet": "rule:admin_or_network_owner",
 
-    "create_subnetpool": "",
+    "create_subnetpool": "rule:cloud_admin_or_network_admin",
     "create_subnetpool:shared": "rule:admin_only",
     "create_subnetpool:is_default": "rule:admin_only",
     "get_subnetpool": "rule:admin_or_owner or rule:shared_subnetpools",
@@ -34,7 +34,7 @@
     "update_subnetpool:is_default": "rule:admin_only",
     "delete_subnetpool": "rule:admin_or_owner",
 
-    "create_address_scope": "",
+    "create_address_scope": "rule:cloud_admin_or_network_admin",
     "create_address_scope:shared": "rule:admin_only",
     "get_address_scope": "rule:admin_or_owner or rule:shared_address_scopes",
     "update_address_scope": "rule:admin_or_owner",
@@ -42,7 +42,7 @@
     "delete_address_scope": "rule:admin_or_owner",
 
     "create_network": "rule:cloud_admin_or_network_admin",
-    "get_network": "rule:cloud_admin_or_network_admin or rule:shared or rule:external or rule:context_is_advsvc",
+    "get_network": "rule:cloud_admin_or_network_admin or rule:shared or rule:owner or rule:external or rule:context_is_advsvc",
     "get_network:router:external": "rule:regular_user",
     "get_network:segments": "rule:admin_only",
     "get_network:provider:network_type": "rule:admin_only",
@@ -91,7 +91,7 @@
     "update_port": "rule:admin_or_owner or rule:context_is_advsvc",
     "update_port:device_owner": "not rule:network_device or rule:context_is_advsvc or rule:admin_or_network_owner",
     "update_port:mac_address": "rule:admin_only or rule:context_is_advsvc",
-    "update_port:fixed_ips": "rule:context_is_advsvc or rule:admin_or_network_owner",
+    "update_port:fixed_ips": "rule:admin_or_owner or rule:context_is_advsvc",
     "update_port:port_security_enabled": "rule:context_is_advsvc or rule:admin_or_network_owner",
     "update_port:binding:host_id": "rule:admin_only",
     "update_port:binding:profile": "rule:admin_only",
@@ -100,7 +100,7 @@
     "delete_port": "rule:context_is_advsvc or rule:admin_owner_or_network_owner",
 
     "get_router:ha": "rule:admin_only",
-    "create_router": "rule:regular_user",
+    "create_router": "rule:cloud_admin_or_network_admin",
     "create_router:external_gateway_info:enable_snat": "rule:admin_only",
     "create_router:distributed": "rule:admin_only",
     "create_router:ha": "rule:admin_only",
@@ -109,13 +109,23 @@
     "update_router:external_gateway_info:enable_snat": "rule:admin_only",
     "update_router:distributed": "rule:admin_only",
     "update_router:ha": "rule:admin_only",
-    "delete_router": "rule:admin_or_owner",
+    "delete_router": "rule:cloud_admin_or_network_admin",
 
     "add_router_interface": "rule:admin_or_owner",
     "remove_router_interface": "rule:admin_or_owner",
 
-    "create_router:external_gateway_info:external_fixed_ips": "rule:admin_only",
-    "update_router:external_gateway_info:external_fixed_ips": "rule:admin_only",
+    "create_router:external_gateway_info:external_fixed_ips": "rule:cloud_admin_or_network_admin",
+    "update_router:external_gateway_info:external_fixed_ips": "rule:cloud_admin_or_network_admin",
+
+    "create_security_group": "rule:regular_user",
+    "get_security_group": "rule:admin_or_owner",
+    "update_security_group": "rule:admin_or_owner",
+    "delete_security_group": "rule:admin_or_owner",
+
+    "create_security_group_rule": "rule:regular_user",
+    "get_security_group_rule": "rule:admin_or_owner",
+    "update_security_group_rule": "rule:admin_or_owner",
+    "delete_security_group_rule": "rule:admin_or_owner",
 
     "create_firewall": "",
     "get_firewall": "rule:admin_or_owner",
@@ -212,12 +222,12 @@
     "get_rule_type": "rule:regular_user",
 
     "restrict_wildcard": "(not field:rbac_policy:target_tenant=*) or rule:admin_only",
-    "create_rbac_policy": "",
+    "create_rbac_policy": "rule:cloud_admin_or_network_admin",
     "create_rbac_policy:target_tenant": "rule:restrict_wildcard",
-    "update_rbac_policy": "rule:admin_or_owner",
-    "update_rbac_policy:target_tenant": "rule:restrict_wildcard and rule:admin_or_owner",
+    "update_rbac_policy": "rule:cloud_admin_or_network_admin",
+    "update_rbac_policy:target_tenant": "rule:restrict_wildcard and rule:cloud_admin_or_network_admin",
     "get_rbac_policy": "rule:admin_or_owner",
-    "delete_rbac_policy": "rule:admin_or_owner",
+    "delete_rbac_policy": "rule:cloud_admin_or_network_admin",
 
     "create_flavor_service_profile": "rule:admin_only",
     "delete_flavor_service_profile": "rule:admin_only",

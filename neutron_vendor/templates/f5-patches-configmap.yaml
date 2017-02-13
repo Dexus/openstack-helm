@@ -8,15 +8,5 @@ metadata:
     component: neutron
 
 data:
-  barbican-cert.diff: |
-{{ .Files.Get "patches/f5/barbican_cert.diff" | indent 4 }}
-  service-builder.diff: |
-{{ .Files.Get "patches/f5/service_builder.diff" | indent 4 }}
-  network-helper.diff: |
-{{ .Files.Get "patches/f5/network_helper.diff" | indent 4 }}
-  keystone.diff: |
-{{ .Files.Get "patches/f5/keystone.diff" | indent 4 }}
   bigip-init.diff: |
 {{ .Files.Get "patches/f5/bigip_init.diff" | indent 4 }}
-  l2-service.diff: |
-{{ .Files.Get "patches/f5/l2_service.diff" | indent 4 }}

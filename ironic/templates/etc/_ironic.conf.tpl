@@ -9,6 +9,9 @@ network_provider=neutron_plugin
 enabled_network_interfaces=noop,flat,neutron
 default_network_interface=neutron
 
+rpc_response_timeout = {{ .Values.rpc_response_timeout | default .Values.global.rpc_response_timeout | default 60 }}
+rpc_workers = {{ .Values.rpc_workers | default .Values.global.rpc_workers | default 1 }}
+
 [dhcp]
 dhcp_provider=none
 
@@ -50,11 +53,7 @@ url = {{.Values.global.neutron_api_endpoint_protocol_internal}}://{{include "neu
 cleaning_network_uuid={{ .Values.network_cleaning_uuid }}
 provisioning_network_uuid={{ .Values.network_management_uuid }}
 
-[oslo_messaging_rabbit]
-rabbit_userid = {{ .Values.global.rabbitmq_default_user }}
-rabbit_password = {{ .Values.global.rabbitmq_default_pass }}
-rabbit_host =  {{include "rabbitmq_host" .}}
-rabbit_ha_queues = true
+{{include "oslo_messaging_rabbit" .}}
 
 [oslo_middleware]
 enable_proxy_headers_parsing = True

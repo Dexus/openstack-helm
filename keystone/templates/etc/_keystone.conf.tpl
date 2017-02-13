@@ -9,6 +9,7 @@ logging_exception_prefix = %(process)d ERROR %(name)s %(instance)s
 
 notification_driver = messaging
 rpc_backend = rabbit
+rpc_response_timeout = {{ .Values.rpc_response_timeout | default .Values.global.rpc_response_timeout | default 300 }}
 
 [cache]
 backend = oslo_cache.memcache_pool
@@ -20,6 +21,8 @@ servers = {{include "memcached_host" .}}:{{.Values.global.memcached_port_public}
 
 [token]
 provider = fernet
+# default is 3600, increased to 4 hrs because of endless image upload durations to ap-au-1
+expiration = 14400
 
 [fernet_tokens]
 key_repository = /fernet-keys
@@ -33,9 +36,6 @@ default_domain_id = default
 domain_specific_drivers_enabled = true
 domain_configurations_from_database = true
 
-[catalog]
-driver = endpoint_override
-
 [trust]
 enabled = true
 allow_redelegation = true
@@ -44,8 +44,4 @@ allow_redelegation = true
 admin_project_domain_name = ccadmin
 admin_project_name = cloud_admin
 
-[oslo_messaging_rabbit]
-rabbit_userid = {{ .Values.global.rabbitmq_default_user }}
-rabbit_password = {{ .Values.global.rabbitmq_default_pass }}
-rabbit_host = {{include "rabbitmq_host" .}}
-rabbit_ha_queues = true
+{{include "oslo_messaging_rabbit" .}}

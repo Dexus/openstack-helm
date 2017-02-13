@@ -8,6 +8,9 @@ log_config_append = /etc/neutron/logging.conf
 #lock_path = /var/lock/neutron
 api_paste_config = /etc/neutron/api-paste.ini
 
+allow_pagination = true
+allow_sorting = true
+
 interface_driver = neutron.agent.linux.interface.OVSInterfaceDriver
 
 allow_overlapping_ips = true
@@ -33,6 +36,14 @@ external_dns_driver = {{.Values.dns_external_driver}}
 
 global_physnet_mtu = {{.Values.global.default_mtu}}
 advertise_mtu = True
+
+rpc_response_timeout = {{ .Values.rpc_response_timeout | default .Values.global.rpc_response_timeout | default 60 }}
+rpc_workers = {{ .Values.rpc_workers | default .Values.global.rpc_workers | default 1 }}
+{{ if .Values.api_workers | default .Values.global.api_workers }}api_workers = {{ .Values.api_workers | default .Values.global.api_workers }}{{ end }}
+
+wsgi_default_pool_size = {{ .Values.wsgi_default_pool_size | default .Values.global.wsgi_default_pool_size | default 100 }}
+max_pool_size = {{ .Values.max_pool_size | default .Values.global.max_pool_size | default 5 }}
+max_overflow = {{ .Values.max_overflow | default .Values.global.max_overflow | default 10 }}
 
 [nova]
 auth_url = {{.Values.global.keystone_api_endpoint_protocol_admin}}://{{include "keystone_api_endpoint_host_admin" .}}:{{ .Values.global.keystone_api_port_admin }}/v3
@@ -60,11 +71,7 @@ ipv4_ptr_zone_prefix_size = 24
 [oslo_concurrency]
 lock_path = /var/lib/neutron/tmp
 
-[oslo_messaging_rabbit]
-rabbit_userid = {{ .Values.global.rabbitmq_default_user }}
-rabbit_password = {{ .Values.global.rabbitmq_default_pass }}
-rabbit_host =  {{include "rabbitmq_host" .}}
-rabbit_ha_queues = true
+{{include "oslo_messaging_rabbit" .}}
 
 [oslo_middleware]
 enable_proxy_headers_parsing = true

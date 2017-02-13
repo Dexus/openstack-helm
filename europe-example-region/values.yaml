@@ -40,9 +40,11 @@ global:
   manila_service_password: YourOwnSecret!
 
   designate_mdns_external_ip:  10.0.0.10
+  designate_mdns_akamai_ip:  10.0.0.9
   designate_service_password: YourOwnSecret!
 
-
+  rpc_response_timeout: 120
+  rpc_workers: 5
 
   # Define hardware components
   hypervisors_vmware:
@@ -60,7 +62,7 @@ global:
   hypervisors_ironic:
     - name: ironic
 
-  volumes_netapp: []
+  volumes: []
 
   network_agents:
     - name: network0
@@ -104,18 +106,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
   nova:
     image_version_nova_api_m3: 'v1'
@@ -141,18 +133,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
 
   glance:
@@ -168,18 +150,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
 
   cinder:
@@ -192,18 +164,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
 
   manila:
@@ -216,18 +178,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
     shares:
       nova:
@@ -314,18 +266,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
 
   ironic:
@@ -343,18 +285,8 @@ openstack:
       password: YourOwnSecret!
       backup:
         enabled: false
-        repository: sapcc/backup-tools
-        image_version: v0.4.1
         interval_full: 3 days
         interval_incr: 3 days
-        os_auth_url: https://identity.region.domain.tld/v3
-        os_auth_version: 3
-        os_identity_api_version: 3
-        os_username: backup_username
-        os_user_domain: Default
-        os_project_name: master
-        os_project_domain: ccmaster
-        os_region_name: eu
         os_password: YourOwnSecret!
 
   barbican:
@@ -363,6 +295,23 @@ openstack:
     sentry_dsn: TODO
     postgres:
       password: YourOwnSecret!
+      backup:
+        enabled: false
+        interval_full: 3 days
+        interval_incr: 3 days
+        os_password: YourOwnSecret!
+
+  horizon:
+    image_version_horizon_m3: 'v1'
+    secret_key: YourOwnSecret!
+  designate:
+    image_version_designate_api_m3: 'v1'
+    image_version_designate_central_m3: 'v1'
+    image_version_designate_mdns_m3: 'v1'
+    image_version_designate_poolmanager_m3: 'v1'
+    sentry_dsn: "add your own"
+    mariadb:
+      root_password: YourOwnSecret!
       backup:
         enabled: false
         repository: sapcc/backup-tools
@@ -378,26 +327,13 @@ openstack:
         os_project_domain: ccmaster
         os_region_name: eu
         os_password: YourOwnSecret!
-
-  horizon:
-    image_version_horizon_m3: 'v1'
-    secret_key: YourOwnSecret!
-  designate:
-    image_version_designate_api_m3: 'v1'
-    image_version_designate_central_m3: 'v1'
-    image_version_designate_mdns_m3: 'v1'
-    image_version_designate_poolmanager_m3: 'v1'
-    sentry_dsn: "add your own"
-    mariadb:
-      root_password: YourOwnSecret!
     rndc_key: YourKey
     bind_pools:
       - name: default
         nameservers:
           - hostname: ns1.your.domain
             ip: 10.0.0.11
-          - hostname: ns2.your.domai
+          - hostname: ns2.your.domain
             ip: 10.0.0.12
-          - hostname: ns3.your.domai
-            ip: 10.0.0.12
-
+          - hostname: ns3.your.domain
+            ip: 10.0.0.13

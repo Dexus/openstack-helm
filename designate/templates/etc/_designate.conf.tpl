@@ -33,6 +33,13 @@ notification_topics = notifications
 # Supported record types
 #supported_record_type = A, AAAA, CNAME, MX, SRV, TXT, SPF, NS, PTR, SSHFP, SOA
 
+# Setting SOA defaults
+default-soa-refresh-min = 3500
+default-soa-refresh-max = 3600
+default-soa-retry = 600
+default-soa-expire = 3600000
+default-soa-minimum = 300
+
 # Setting default quotas
 quota_zones = 0
 quota_zone_recordsets = 400
@@ -40,15 +47,14 @@ quota_zone_records = 350
 quota_recordset_records = 20
 quota_api_export_size = 1000
 
-#-----------------------
-# RabbitMQ Config
-#-----------------------
-[oslo_messaging_rabbit]
-rabbit_userid = {{ .Values.global.rabbitmq_default_user }}
-rabbit_password = {{ .Values.global.rabbitmq_default_pass }}
-#rabbit_virtual_host = /
-#rabbit_use_ssl = False
-rabbit_hosts = {{ include "rabbitmq_host" . }}
+rpc_response_timeout = {{ .Values.rpc_response_timeout | default .Values.global.rpc_response_timeout | default 300 }}
+rpc_workers = {{ .Values.rpc_workers | default .Values.global.rpc_workers | default 1 }}
+
+wsgi_default_pool_size = {{ .Values.wsgi_default_pool_size | default .Values.global.wsgi_default_pool_size | default 100 }}
+max_pool_size = {{ .Values.max_pool_size | default .Values.global.max_pool_size | default 5 }}
+max_overflow = {{ .Values.max_overflow | default .Values.global.max_overflow | default 10 }}
+
+{{include "oslo_messaging_rabbit" .}}
 
 ########################
 ## Service Configuration
@@ -85,7 +91,7 @@ default_pool_id = '794ccc2c-d751-44fe-b57f-8894c9f5c842'
 
 # What filters to use. They are applied in order listed in the option, from
 # left to right
-#scheduler_filters = default_pool
+scheduler_filters = {{ .Values.scheduler_filters }}
 
 #-----------------------
 # API Service
@@ -128,7 +134,7 @@ enabled_extensions_v1 = diagnostics, quotas, reports, sync, touch
 enable_api_v2 = True
 
 # Enabled API Version 2 extensions
-#enabled_extensions_v2 = quotas, reports
+enabled_extensions_v2 = quotas, reports
 
 # Default per-page limit for the V2 API, a value of None means show all results
 # by default
@@ -138,12 +144,12 @@ enable_api_v2 = True
 #max_limit_v2 = 1000
 
 # Enable Admin API (experimental)
-enable_api_admin = True
+#enable_api_admin = True
 
 # Enabled Admin API extensions
 # Can be one or more of : reports, quotas, counts, tenants, target_sync
 # zone export is in zones extension
-enabled_extensions_admin = quotas
+#enabled_extensions_admin = quotas
 
 # Default per-page limit for the Admin API, a value of None means show all results
 # by default
@@ -254,7 +260,7 @@ port = 5354
 #tcp_recv_timeout = 0.5
 
 # Enforce all incoming queries (including AXFR) are TSIG signed
-#query_enforce_tsig = False
+query_enforce_tsig = {{ .Values.query_enforce_tsig }}
 
 # Send all traffic over TCP
 #all_tcp = False
@@ -328,6 +334,7 @@ port = 5354
 
 # The ID of the pool managed by this instance of the Pool Manager
 pool_id = 794ccc2c-d751-44fe-b57f-8894c9f5c842
+#pool_id = 9c489bf4-9eac-4887-95a7-20fa483018b3
 
 # The percentage of servers requiring a successful update for a domain change
 # to be considered active
@@ -366,9 +373,42 @@ pool_id = 794ccc2c-d751-44fe-b57f-8894c9f5c842
 #periodic_sync_max_attempts = 3
 #periodic_sync_retry_interval = 30
 
-
 # The cache driver to use
-#cache_driver = memcache
+cache_driver = memcache
+
+#-----------------------
+# Worker Service
+#-----------------------
+[service:worker]
+# Whether to send events to worker instead of Pool Manager
+enabled = {{.Values.worker_enabled}}
+
+# Number of Worker processes to spawn
+#workers = None
+
+# Number of Worker greenthreads to spawn
+#threads = 1000
+
+# The percentage of servers requiring a successful update for a zone change
+# to be considered active
+threshold_percentage =  {{ .Values.worker_threshold_percentage }}
+
+# The time to wait for a response from a server
+#poll_timeout = 30
+
+# The time between retrying to send a request and waiting for a response from a
+# server
+#poll_retry_interval = 15
+
+# The maximum number of times to retry sending a request and wait for a
+# response from a server
+#poll_max_retries = 10
+
+# The time to wait before sending the first request to a server
+#poll_delay = 5
+
+# Whether to allow worker to send NOTIFYs. NOTIFY requests to mdns will noop
+notify = {{ .Values.worker_notify }}
 
 ###################################
 ## Pool Manager Cache Configuration

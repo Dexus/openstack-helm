@@ -23,6 +23,14 @@ os_region_name = {{.Values.global.region}}
 
 osapi_share_listen = 0.0.0.0
 
+rpc_response_timeout = {{ .Values.rpc_response_timeout | default .Values.global.rpc_response_timeout | default 60 }}
+rpc_workers = {{ .Values.rpc_workers | default .Values.global.rpc_workers | default 1 }}
+
+wsgi_default_pool_size = {{ .Values.wsgi_default_pool_size | default .Values.global.wsgi_default_pool_size | default 100 }}
+max_pool_size = {{ .Values.max_pool_size | default .Values.global.max_pool_size | default 5 }}
+max_overflow = {{ .Values.max_overflow | default .Values.global.max_overflow | default 10 }}
+
+quota_share_networks = 0
 
 [cinder]
 auth_url = {{.Values.global.keystone_api_endpoint_protocol_admin}}://{{include "keystone_api_endpoint_host_admin" .}}:{{ .Values.global.keystone_api_port_admin }}/v3
@@ -58,12 +66,7 @@ project_name = {{.Values.global.keystone_service_project}}
 project_domain_name = {{.Values.global.keystone_service_domain}}
 insecure = True
 
-
-[oslo_messaging_rabbit]
-rabbit_userid = {{ .Values.global.rabbitmq_default_user }}
-rabbit_password = {{ .Values.global.rabbitmq_default_pass }}
-rabbit_host =  {{include "rabbitmq_host" .}}
-rabbit_ha_queues = true
+{{include "oslo_messaging_rabbit" .}}
 
 [oslo_concurrency]
 lock_path = /var/lib/manila/tmp
